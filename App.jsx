@@ -45,17 +45,28 @@ function App() {
 
   const addStudent = async () => {
     if (contract) {
-      await contract.methods.addStudent(studentAddress, name, studentId, parentAddress).send({ from: accounts[0] });
+      try {
+        await contract.methods.addStudent(studentAddress, name, studentId, parentAddress).send({ from: accounts[0] });
+        console.log('Student added successfully');
+      } catch (error) {
+        console.error('Error adding student:', error);
+      }
     }
   };
-
+  
   const verifyStudent = async () => {
-    if (contract) {
-      await contract.methods.verifyStudent(studentAddress).send({ from: accounts[0] });
-      const student = await contract.methods.getStudent(studentAddress).call();
-      setVerificationResult(student.isVerified ? 'Student is verified' : 'Student is not verified');
+    try {
+      if (contract) {
+        await contract.methods.verifyStudent(studentAddress).send({ from: accounts[0] });
+        const student = await contract.methods.getStudent(studentAddress).call();
+        const result = student.isVerified ? 'Student is verified' : 'Student is not verified';
+        setVerificationResult(result);
+        console.log('Verification result:', result);
+      }
+    } catch (error) {
+      console.error('Error verifying student:', error);
     }
-  };
+  };   
 
   const addGrade = async () => {
     if (contract) {
